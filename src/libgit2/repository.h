@@ -26,7 +26,7 @@
 #include "diff_driver.h"
 #include "grafts.h"
 
-#define DOT_GIT ".git"
+#define DOT_GIT ".pcsync"
 #define GIT_DIR DOT_GIT "/"
 #define GIT_DIR_MODE 0755
 #define GIT_BARE_DIR_MODE 0777
