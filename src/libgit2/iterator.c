@@ -1250,19 +1250,22 @@ GIT_INLINE(bool) filesystem_iterator_is_dot_git(
 	if (!iterator__ignore_dot_git(&iter->base))
 		return false;
 
-	if ((len = path_len) < 4)
+	if ((len = path_len) < 7)
 		return false;
 
 	if (path[len - 1] == '/')
 		len--;
 
-	if (git__tolower(path[len - 1]) != 't' ||
-		git__tolower(path[len - 2]) != 'i' ||
-		git__tolower(path[len - 3]) != 'g' ||
-		git__tolower(path[len - 4]) != '.')
+	if (git__tolower(path[len - 1]) != 'c' ||
+		git__tolower(path[len - 2]) != 'n' ||
+		git__tolower(path[len - 3]) != 'y' ||
+		git__tolower(path[len - 4]) != 's' ||
+		git__tolower(path[len - 5]) != 'c' ||
+		git__tolower(path[len - 6]) != 'p' ||
+		path[len - 7] != '.')
 		return false;
 
-	return (len == 4 || path[len - 5] == '/');
+	return (len == 7 || path[len - 8] == '/');
 }
 
 static int filesystem_iterator_entry_hash(
