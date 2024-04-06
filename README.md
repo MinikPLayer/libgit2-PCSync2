@@ -1,4 +1,4 @@
-libgit2 - the Git linkable library
+libgit2 - the Git linkable library [v. a418d9d]
 ==================================
 
 | Build Status | |
