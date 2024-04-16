@@ -26,7 +26,7 @@
 #include "diff_driver.h"
 #include "grafts.h"
 
-#define DOT_GIT ".pcsync"
+#define DOT_GIT ".prsync"
 #define GIT_DIR DOT_GIT "/"
 #define GIT_DIR_MODE 0755
 #define GIT_BARE_DIR_MODE 0777
@@ -39,21 +39,21 @@ extern bool git_repository__validate_ownership;
 
 /** Cvar cache identifiers */
 typedef enum {
-	GIT_CONFIGMAP_AUTO_CRLF = 0,    /* core.autocrlf */
-	GIT_CONFIGMAP_EOL,              /* core.eol */
-	GIT_CONFIGMAP_SYMLINKS,         /* core.symlinks */
-	GIT_CONFIGMAP_IGNORECASE,       /* core.ignorecase */
-	GIT_CONFIGMAP_FILEMODE,         /* core.filemode */
-	GIT_CONFIGMAP_IGNORESTAT,       /* core.ignorestat */
-	GIT_CONFIGMAP_TRUSTCTIME,       /* core.trustctime */
-	GIT_CONFIGMAP_ABBREV,           /* core.abbrev */
-	GIT_CONFIGMAP_PRECOMPOSE,       /* core.precomposeunicode */
-	GIT_CONFIGMAP_SAFE_CRLF,		/* core.safecrlf */
+	GIT_CONFIGMAP_AUTO_CRLF = 0, /* core.autocrlf */
+	GIT_CONFIGMAP_EOL, /* core.eol */
+	GIT_CONFIGMAP_SYMLINKS, /* core.symlinks */
+	GIT_CONFIGMAP_IGNORECASE, /* core.ignorecase */
+	GIT_CONFIGMAP_FILEMODE, /* core.filemode */
+	GIT_CONFIGMAP_IGNORESTAT, /* core.ignorestat */
+	GIT_CONFIGMAP_TRUSTCTIME, /* core.trustctime */
+	GIT_CONFIGMAP_ABBREV, /* core.abbrev */
+	GIT_CONFIGMAP_PRECOMPOSE, /* core.precomposeunicode */
+	GIT_CONFIGMAP_SAFE_CRLF, /* core.safecrlf */
 	GIT_CONFIGMAP_LOGALLREFUPDATES, /* core.logallrefupdates */
-	GIT_CONFIGMAP_PROTECTHFS,       /* core.protectHFS */
-	GIT_CONFIGMAP_PROTECTNTFS,      /* core.protectNTFS */
+	GIT_CONFIGMAP_PROTECTHFS, /* core.protectHFS */
+	GIT_CONFIGMAP_PROTECTNTFS, /* core.protectNTFS */
 	GIT_CONFIGMAP_FSYNCOBJECTFILES, /* core.fsyncObjectFiles */
-	GIT_CONFIGMAP_LONGPATHS,        /* core.longpaths */
+	GIT_CONFIGMAP_LONGPATHS, /* core.longpaths */
 	GIT_CONFIGMAP_CACHE_MAX
 } git_configmap_item;
 
@@ -127,7 +127,7 @@ typedef enum {
 enum {
 	GIT_REPOSITORY_INIT__HAS_DOTGIT = (1u << 16),
 	GIT_REPOSITORY_INIT__NATURAL_WD = (1u << 17),
-	GIT_REPOSITORY_INIT__IS_REINIT  = (1u << 18)
+	GIT_REPOSITORY_INIT__IS_REINIT = (1u << 18)
 };
 
 /** Internal structure for repository object */
@@ -152,9 +152,7 @@ struct git_repository {
 
 	git_array_t(git_str) reserved_names;
 
-	unsigned use_env:1,
-	         is_bare:1,
-	         is_worktree:1;
+	unsigned use_env : 1, is_bare : 1, is_worktree : 1;
 	git_oid_t oid_type;
 
 	unsigned int lru_counter;
@@ -178,9 +176,10 @@ int git_repository_create_head(const char *git_dir, const char *ref_name);
 
 typedef int (*git_repository_foreach_worktree_cb)(git_repository *, void *);
 
-int git_repository_foreach_worktree(git_repository *repo,
-				    git_repository_foreach_worktree_cb cb,
-				    void *payload);
+int git_repository_foreach_worktree(
+        git_repository *repo,
+        git_repository_foreach_worktree_cb cb,
+        void *payload);
 
 /*
  * Weak pointers to repository internals.
@@ -194,12 +193,14 @@ int git_repository_odb__weakptr(git_odb **out, git_repository *repo);
 int git_repository_refdb__weakptr(git_refdb **out, git_repository *repo);
 int git_repository_index__weakptr(git_index **out, git_repository *repo);
 int git_repository_grafts__weakptr(git_grafts **out, git_repository *repo);
-int git_repository_shallow_grafts__weakptr(git_grafts **out, git_repository *repo);
+int git_repository_shallow_grafts__weakptr(
+        git_grafts **out,
+        git_repository *repo);
 
 int git_repository__wrap_odb(
-	git_repository **out,
-	git_odb *odb,
-	git_oid_t oid_type);
+        git_repository **out,
+        git_odb *odb,
+        git_oid_t oid_type);
 
 /*
  * Configuration map cache
@@ -207,29 +208,39 @@ int git_repository__wrap_odb(
  * Efficient access to the most used config variables of a repository.
  * The cache is cleared every time the config backend is replaced.
  */
-int git_repository__configmap_lookup(int *out, git_repository *repo, git_configmap_item item);
+int git_repository__configmap_lookup(
+        int *out,
+        git_repository *repo,
+        git_configmap_item item);
 void git_repository__configmap_lookup_cache_clear(git_repository *repo);
 
-int git_repository__item_path(git_str *out, const git_repository *repo, git_repository_item_t item);
+int git_repository__item_path(
+        git_str *out,
+        const git_repository *repo,
+        git_repository_item_t item);
 
-GIT_INLINE(int) git_repository__ensure_not_bare(
-	git_repository *repo,
-	const char *operation_name)
+GIT_INLINE(int)
+git_repository__ensure_not_bare(git_repository *repo, const char *operation_name)
 {
 	if (!git_repository_is_bare(repo))
 		return 0;
 
 	git_error_set(
-		GIT_ERROR_REPOSITORY,
-		"cannot %s. This operation is not allowed against bare repositories.",
-		operation_name);
+	        GIT_ERROR_REPOSITORY,
+	        "cannot %s. This operation is not allowed against bare repositories.",
+	        operation_name);
 
 	return GIT_EBAREREPO;
 }
 
-int git_repository__set_orig_head(git_repository *repo, const git_oid *orig_head);
+int git_repository__set_orig_head(
+        git_repository *repo,
+        const git_oid *orig_head);
 
-int git_repository__cleanup_files(git_repository *repo, const char *files[], size_t files_len);
+int git_repository__cleanup_files(
+        git_repository *repo,
+        const char *files[],
+        size_t files_len);
 
 /* The default "reserved names" for a repository */
 extern git_str git_repository__reserved_names_win32[];
@@ -249,10 +260,18 @@ extern size_t git_repository__reserved_names_posix_len;
  * will still be populated with good defaults.
  */
 bool git_repository__reserved_names(
-	git_str **out, size_t *outlen, git_repository *repo, bool include_ntfs);
+        git_str **out,
+        size_t *outlen,
+        git_repository *repo,
+        bool include_ntfs);
 
-int git_repository__shallow_roots(git_oid **out, size_t *out_len, git_repository *repo);
-int git_repository__shallow_roots_write(git_repository *repo, git_oidarray *roots);
+int git_repository__shallow_roots(
+        git_oid **out,
+        size_t *out_len,
+        git_repository *repo);
+int git_repository__shallow_roots_write(
+        git_repository *repo,
+        git_oidarray *roots);
 
 /*
  * The default branch for the repository; the `init.defaultBranch`
@@ -266,7 +285,10 @@ int git_repository_initialbranch(git_str *out, git_repository *repo);
  * to ensure that the path is not longer than MAX_PATH on Windows
  * (unless `core.longpaths` is set in the repo config).
  */
-int git_repository_workdir_path(git_str *out, git_repository *repo, const char *path);
+int git_repository_workdir_path(
+        git_str *out,
+        git_repository *repo,
+        const char *path);
 
 int git_repository__extensions(char ***out, size_t *out_len);
 int git_repository__set_extensions(const char **extensions, size_t len);
@@ -276,8 +298,6 @@ void git_repository__free_extensions(void);
  * Set the object format (OID type) for a repository; this will set
  * both the configuration and the internal value for the oid type.
  */
-int git_repository__set_objectformat(
-	git_repository *repo,
-	git_oid_t oid_type);
+int git_repository__set_objectformat(git_repository *repo, git_oid_t oid_type);
 
 #endif

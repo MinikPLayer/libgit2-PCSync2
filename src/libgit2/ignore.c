@@ -17,7 +17,7 @@
 
 #define GIT_IGNORE_INTERNAL		"[internal]exclude"
 
-#define GIT_IGNORE_DEFAULT_RULES ".\n..\n.pcsync\n"
+#define GIT_IGNORE_DEFAULT_RULES ".\n..\n.prsync\n"
 
 /**
  * A negative ignore pattern can negate a positive one without
